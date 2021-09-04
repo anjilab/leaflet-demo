@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/leaflet-demo/static/css/main.29572339.chunk.css",
+    "main.js": "/leaflet-demo/static/js/main.7967d395.chunk.js",
+    "main.js.map": "/leaflet-demo/static/js/main.7967d395.chunk.js.map",
+    "runtime-main.js": "/leaflet-demo/static/js/runtime-main.2f31778a.js",
+    "runtime-main.js.map": "/leaflet-demo/static/js/runtime-main.2f31778a.js.map",
+    "static/js/2.b9bc3080.chunk.js": "/leaflet-demo/static/js/2.b9bc3080.chunk.js",
+    "static/js/2.b9bc3080.chunk.js.map": "/leaflet-demo/static/js/2.b9bc3080.chunk.js.map",
+    "static/js/3.d686309c.chunk.js": "/leaflet-demo/static/js/3.d686309c.chunk.js",
+    "static/js/3.d686309c.chunk.js.map": "/leaflet-demo/static/js/3.d686309c.chunk.js.map",
+    "index.html": "/leaflet-demo/index.html",
+    "static/css/main.29572339.chunk.css.map": "/leaflet-demo/static/css/main.29572339.chunk.css.map",
+    "static/js/2.b9bc3080.chunk.js.LICENSE.txt": "/leaflet-demo/static/js/2.b9bc3080.chunk.js.LICENSE.txt",
+    "static/media/education_institute_marker.c0047cd4.svg": "/leaflet-demo/static/media/education_institute_marker.c0047cd4.svg",
+    "static/media/health_institute_marker.63700538.svg": "/leaflet-demo/static/media/health_institute_marker.63700538.svg",
+    "static/media/marker.c979f09c.svg": "/leaflet-demo/static/media/marker.c979f09c.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.2f31778a.js",
+    "static/js/2.b9bc3080.chunk.js",
+    "static/css/main.29572339.chunk.css",
+    "static/js/main.7967d395.chunk.js"
+  ]
+}
