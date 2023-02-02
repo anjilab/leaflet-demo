@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import L1 from "leaflet.markercluster";
+import React, { useEffect, useRef, useState } from "react";
 
-import markerIcon from './marker.svg';
-import healthMarkerIcon from './health_institute_marker.svg';
+
 import educationMarkerIcon from './education_institute_marker.svg';
+import healthMarkerIcon from './health_institute_marker.svg';
 
 L.Mask = L.Polygon.extend({
     options: {
@@ -28,6 +28,23 @@ L.Mask = L.Polygon.extend({
 
         L.Polygon.prototype.initialize.call(this, [outerBoundsLatLngs, latLngs], options);
     },
+});
+
+L.ClickableTooltip = L.Tooltip.extend({
+
+    onAdd: function (map) {
+        L.Tooltip.prototype.onAdd.call(this, map);
+
+        var el = this.getElement(),
+            self = this;
+
+        console.log(el)
+
+        el.addEventListener('click', function () {
+            self.fire("click");
+        });
+        el.style.pointerEvents = 'auto';
+    }
 });
 
 L.mask = function (latLngs, options) {
@@ -69,6 +86,33 @@ const Map = ({ type }) => {
             id: 2,
             project_name_in_english: "Health Data testingggggrrr",
             region: "Damak Nagarpalika",
+            type: 'Health'
+        },
+    ];
+
+    const withoutCoordList = [
+        {
+            id: 1,
+            project_name_in_english: "Education Data",
+            area_name: "Damak Nagarpalika",
+            type: 'Education'
+        },
+        {
+            id: 2,
+            project_name_in_english: "Education Data 23",
+            area_name: "Damak Nagarpalika",
+            type: 'Education'
+        },
+        {
+            id: 3,
+            project_name_in_english: "Education Data 3",
+            area_name: "Damak Nagarpalika",
+            type: 'Education'
+        },
+        {
+            id: 2,
+            project_name_in_english: "Health Data testingggggrrr",
+            area_name: "Damak Nagarpalika",
             type: 'Health'
         },
     ];
@@ -121,13 +165,15 @@ const Map = ({ type }) => {
 
 
     useEffect(() => {
+        console.log(type, 'type')
         if (Object.keys(nepal).length && Object.keys(provinces).length && Object.keys(districts).length) {
             type === 'geojson' ? mapPlotGeojson()
-                : type === 'simplemarker' ? mapPlotSimpleMarker(list)
-                    : type === 'custommarker' ? mapPlotCustomMarker(list)
-                        : type === 'clustermarker' ? mapPlotMarkerCluster(list)
-                            : type === 'plugin' ? mapPlotPlugin(list)
-                                : initialMap()
+                : type === 'district-geojson' ? mapPlotDistrictGeojson(withoutCoordList)
+                    : type === 'simplemarker' ? mapPlotSimpleMarker(list)
+                        : type === 'custommarker' ? mapPlotCustomMarker(list)
+                            : type === 'clustermarker' ? mapPlotMarkerCluster(list)
+                                : type === 'plugin' ? mapPlotPlugin(list)
+                                    : initialMap()
 
         }
     }, [list, nepal, provinces, districts, type]);
@@ -146,6 +192,117 @@ const Map = ({ type }) => {
         if (layerRef.current === null && latLngs.length) {
             layerRef.current = L.geoJSON(nepal.features).addTo(mapRef.current);
         }
+    }
+
+    const mapPlotDistrictGeojson = (withoutCoordList) => {
+        const latLngs = [];
+        const coordinates = nepal.features[0].geometry.coordinates[0][0];
+
+        for (let i = 0; i < coordinates.length; i++) {
+            latLngs.push(new L.LatLng(coordinates[i][1], coordinates[i][0]));
+        }
+
+        if (layerRef.current === null && latLngs.length) {
+            const options = {
+                style: {
+                    color: '#2564de',
+                    weight: 2,
+                    opacity: 0.1,
+                    fillColor: 'transparent',
+                },
+            };
+            layerRef.current = L.geoJSON(districts.features, {
+                style: { ...options.style, opacity: 0.3 },
+                onEachFeature: onEachDistrictFeature,
+            }).addTo(mapRef.current);
+        }
+    }
+
+    function onEachDistrictFeature(feature, layer) {
+        const tooltipOption = {
+            interactive: true,
+            // sticky: true,
+            permanent: false,
+            // permanent: true,
+            opacity: 1,
+            direction: 'top',
+            // bubblingMouseEvents: false,
+            className: 'leaflet-tooltip'
+        }
+        layer.on('mouseover', mouseOver);
+        layer.on('mouseout', mouseOut);
+
+
+        const popup = layer.bindPopup(
+            `<div className="map-popup">
+
+            <div className="map-popup-content">
+                <a
+                    className="map-btn"
+                    href='/geojson/map'
+                >
+                    Go to geojson map
+                </a>
+
+                <a
+                    className="map-btn"
+                    href='/marker/map'
+
+                >
+                    Go to marker map
+                </a>
+            </div>
+        </div>`,
+            tooltipOption,
+        )
+
+
+        // layer.bindTooltip(
+        //     `<div className="map-popup">
+
+        //     <div className="map-popup-content">
+        //         <a
+        //             className="map-btn"
+        //             href='/geojson/map'
+        //         >
+        //             Go to geojson map ${feature.properties.DISTRICT}
+        //         </a>
+
+        //         <a
+        //             className="map-btn"
+        //             href='/marker/map'
+           
+        //         >
+        //             Go to marker map
+        //         </a>
+        //     </div>
+        // </div>`,
+        //     tooltipOption,
+        // )
+
+
+        function mouseOver() {
+            this.bringToFront()
+
+            // tooltips.openTooltip()
+            popup.openPopup();
+            // layer.togglePopup()
+
+            // this.setStyle({
+            //     color: '#2564de',
+            // });
+        }
+
+        function mouseOut() {
+            // this.setStyle({
+            //     color: '#fff',
+            // });
+            // popup.closePopup();
+        }
+
+        // layer.on('click', function (e) {
+        //     mapRef.current.fitBounds(this.getBounds());
+        // });
     }
 
     const mapPlotSimpleMarker = (data) => {
@@ -174,7 +331,7 @@ const Map = ({ type }) => {
             }).addTo(mapRef.current);
 
         }
-        L.marker(data[0].coord).bindPopup('test').addTo(mapRef.current)
+
     }
 
     const mapPlotCustomMarker = (data) => {
@@ -247,7 +404,7 @@ const Map = ({ type }) => {
         }
         if (markerRef.current) {
             markerRef.current.clearLayers();
-        }        
+        }
         markerRef.current = new L1.MarkerClusterGroup();
         let provinceMap = data.map((eachData) =>
             markerRef.current.addLayer(

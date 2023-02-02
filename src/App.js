@@ -26,6 +26,9 @@ export default function App() {
               <Link to="/geojson/map">Geojson map</Link>
             </li>
             <li>
+              <Link to="/district/map">Geojson district map</Link>
+            </li>
+            <li>
               <Link to="/shapefile/map">Shapefile map</Link>
             </li>
             <li>
@@ -51,6 +54,9 @@ export default function App() {
           </Route>
           <Route path="/geojson/map">
             <Map type="geojson" />
+          </Route>
+          <Route path="/district/map">
+            <Map type="district-geojson" />
           </Route>
           <Route path="/shapefile/map">
             <ShapeMap />
